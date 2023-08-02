@@ -2,13 +2,24 @@
   <div class="course-grid">
     <div class="course" v-for="course of courses" :key="course.id">
       <h2>{{ course.name }}</h2>
-      <p>
-        Id: {{ course.id }}, Credits: {{ course.credits }}, Hours:
-        {{ course.hours }}, Location: {{ course.location }}
-      </p>
-      <p>{{ course.description }}</p>
+      <div class="course-info">
+        <p>
+          Id: {{ course.id }}, Credits: {{ course.credits }}, Hours:
+          {{ course.hours }}, Location: {{ course.location }}
+        </p>
+        <p>{{ course.description }}</p>
+        <p>Students: {{ course.students }}/20</p>
+      </div>
+      <!-- <button @click="showInfo">View course info</button> -->
+      <button
+        :id="course.id"
+        v-if="course.students < 20"
+        @click="addStudent, removeStudent"
+      >
+        Add Course
+      </button>
+      <button v-else class="disabled"></button>
     </div>
-    <button @click="increment">Add Course</button>
   </div>
 </template>
 
@@ -24,8 +35,27 @@ export default {
           name: "Vue.js",
           credits: 3,
           hours: 40,
+          students: 20,
           location: "Vanier",
           description: "A lot of mind-bending stuff. Brain hurting.",
+        },
+        {
+          id: 2,
+          name: "Frameworks",
+          credits: 3,
+          hours: 40,
+          students: 19,
+          location: "Vanier",
+          description: "Even more stuff.",
+        },
+        {
+          id: 3,
+          name: "Programming",
+          credits: 3,
+          hours: 40,
+          students: 15,
+          location: "Vanier",
+          description: "Even more hurt.",
         },
       ],
     };
@@ -34,8 +64,45 @@ export default {
     increment() {
       this.$emit("count-student");
     },
+    addStudent() {
+      for (this.course of this.courses) {
+        if (this.course.id == event.target.id) {
+          this.course.students++;
+          event.target.textContent = "Remove course";
+        }
+      }
+    },
+    removeStudent() {
+      if (event.target.textContent == "Remove course") {
+        this.course.students--;
+        event.target.textContent = "Add course";
+      }
+    },
+    // showInfo() {
+    //   this.classList.remove("disabled");
+    //   this.classList.add("shown");
+    // },
   },
 };
 </script>
 
-<style></style>
+<style scoped lang="scss">
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
+}
+
+.course {
+  border: 1px solid #4682b4;
+  border-radius: 10px;
+}
+
+.disabled {
+  display: none;
+}
+
+.shown {
+  display: block;
+}
+</style>
