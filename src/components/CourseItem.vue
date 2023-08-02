@@ -10,12 +10,7 @@
         <p>{{ course.description }}</p>
         <p>Students: {{ course.students }}/20</p>
       </div>
-      <!-- <button @click="showInfo">View course info</button> -->
-      <button
-        :id="course.id"
-        v-if="course.students < 20"
-        @click="addStudent, removeStudent"
-      >
+      <button :id="course.id" v-if="course.students < 20" @click="addStudent">
         Add Course
       </button>
       <button v-else class="disabled"></button>
@@ -72,16 +67,6 @@ export default {
         }
       }
     },
-    removeStudent() {
-      if (event.target.textContent == "Remove course") {
-        this.course.students--;
-        event.target.textContent = "Add course";
-      }
-    },
-    // showInfo() {
-    //   this.classList.remove("disabled");
-    //   this.classList.add("shown");
-    // },
   },
 };
 </script>
