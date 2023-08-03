@@ -1,19 +1,38 @@
 <template>
-  <div class="course-grid">
-    <div class="course" v-for="course of courses" :key="course.id">
-      <h2>{{ course.name }}</h2>
-      <div class="course-info">
-        <p>
-          Id: {{ course.id }}, Credits: {{ course.credits }}, Hours:
-          {{ course.hours }}, Location: {{ course.location }}
-        </p>
-        <p>{{ course.description }}</p>
-        <p>Students: {{ course.students }}/20</p>
-      </div>
-      <button :id="course.id" v-if="course.students < 20" @click="addStudent">
-        Add Course
-      </button>
-      <button v-else class="disabled"></button>
+  <div v-if="course.students < 20" class="course" :class="{ added: button }">
+    <h2>{{ course.name }}</h2>
+    <div class="course-info">
+      <p>
+        Id: {{ course.id }}, Credits: {{ course.credits }}, Hours:
+        {{ course.hours }}, Location: {{ course.location }}
+      </p>
+      <p>{{ course.description }}</p>
+      <p>Students: {{ course.students }}/20</p>
+    </div>
+    <button
+      :id="course.id"
+      v-if="course.students < 20 && button == 0"
+      @click="addStudent"
+    >
+      Add Course
+    </button>
+    <button
+      v-else-if="course.students < 20"
+      :class="{ removeButton: button }"
+      @click="removeStudent"
+    >
+      Remove Course
+    </button>
+  </div>
+  <div v-if="course.students >= 20" class="full">
+    <h2>{{ course.name }}</h2>
+    <div class="course-info">
+      <p>
+        Id: {{ course.id }}, Credits: {{ course.credits }}, Hours:
+        {{ course.hours }}, Location: {{ course.location }}
+      </p>
+      <p>{{ course.description }}</p>
+      <p>Students: {{ course.students }}/20</p>
     </div>
   </div>
 </template>
@@ -23,71 +42,72 @@ export default {
   name: "CourseItem",
   data() {
     return {
-      count: 0,
-      courses: [
-        {
-          id: 1,
-          name: "Vue.js",
-          credits: 3,
-          hours: 40,
-          students: 20,
-          location: "Vanier",
-          description: "A lot of mind-bending stuff. Brain hurting.",
-        },
-        {
-          id: 2,
-          name: "Frameworks",
-          credits: 3,
-          hours: 40,
-          students: 19,
-          location: "Vanier",
-          description: "Even more stuff.",
-        },
-        {
-          id: 3,
-          name: "Programming",
-          credits: 3,
-          hours: 40,
-          students: 15,
-          location: "Vanier",
-          description: "Even more hurt.",
-        },
-      ],
+      button: 0,
     };
   },
-  methods: {
-    increment() {
-      this.$emit("count-student");
+  props: {
+    course: {
+      type: Object,
+      required: true,
     },
+  },
+  methods: {
     addStudent() {
-      for (this.course of this.courses) {
-        if (this.course.id == event.target.id) {
-          this.course.students++;
-          event.target.textContent = "Remove course";
-        }
-      }
+      this.$emit("count-student");
+      this.button = 1;
+    },
+    removeStudent() {
+      this.$emit("remove-student");
+      this.button = 0;
     },
   },
 };
 </script>
 
 <style scoped lang="scss">
-.course-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-gap: 20px;
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+h2 {
+  margin-bottom: 2rem;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 10px 25px;
+  background-color: #4683b4a1;
+  border: none;
+  border-radius: 10px;
 }
 
 .course {
+  padding: 30px;
   border: 1px solid #4682b4;
   border-radius: 10px;
 }
 
-.disabled {
-  display: none;
+.course-info {
+  text-align: left;
 }
 
-.shown {
-  display: block;
+.full {
+  padding: 30px;
+  background-color: rgba(241, 84, 84, 0.7);
+  border: 1px solid #4683b4;
+  border-radius: 10px;
+}
+
+.added {
+  background-color: rgba(70, 182, 70, 0.7);
+}
+
+.removeButton {
+  background-color: aliceblue;
 }
 </style>
